@@ -36,18 +36,26 @@ int main(int argc, char** argv)
         {
             cout << "We have " << physicalDeviceCount << " devices on this system." << endl;
             m_physicalDevices.resize(physicalDeviceCount);
-            vkEnumeratePhysicalDevices(m_instance, &physicalDeviceCount, &m_physicalDevices[0]);
+            vkEnumeratePhysicalDevices(m_instance, &physicalDeviceCount, m_physicalDevices.data());
 
-            VkPhysicalDeviceProperties deviceProperties = { };
-            vkGetPhysicalDeviceProperties(m_physicalDevices[0], &deviceProperties);
+            for (int deviceIndex = 0;  deviceIndex < m_physicalDevices.size(); deviceIndex++)
+            {
+                VkPhysicalDeviceProperties deviceProperties = { };
+                vkGetPhysicalDeviceProperties(m_physicalDevices[deviceIndex], &deviceProperties);
+                cout << deviceProperties.deviceName << endl;
 
-            VkPhysicalDeviceFeatures deviceFeatures = { };
-            vkGetPhysicalDeviceFeatures(m_physicalDevices[0], &deviceFeatures);
+                VkPhysicalDeviceFeatures deviceFeatures = { };
+                vkGetPhysicalDeviceFeatures(m_physicalDevices[deviceIndex], &deviceFeatures);
 
-            VkPhysicalDeviceMemoryProperties memoryProperties;
-            vkGetPhysicalDeviceMemoryProperties(m_physicalDevices[0], &memoryProperties);
+                VkPhysicalDeviceMemoryProperties memoryProperties;
+                vkGetPhysicalDeviceMemoryProperties(m_physicalDevices[deviceIndex], &memoryProperties);
 
-            cout << deviceProperties.deviceName << endl;
+                uint32_t queueFamilyPropertyCount = 0;
+                vector<VkQueueFamilyProperties> queueFamilyProperties;
+                vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevices[deviceIndex], &queueFamilyPropertyCount, nullptr);
+                queueFamilyProperties.resize(queueFamilyPropertyCount);
+                vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevices[deviceIndex], &queueFamilyPropertyCount, &queueFamilyProperties[0]);
+            }
         }
     }
 

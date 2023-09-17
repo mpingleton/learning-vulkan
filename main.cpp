@@ -37,6 +37,11 @@ int main(int argc, char** argv)
             cout << "We have " << physicalDeviceCount << " devices on this system." << endl;
             m_physicalDevices.resize(physicalDeviceCount);
             vkEnumeratePhysicalDevices(m_instance, &physicalDeviceCount, &m_physicalDevices[0]);
+
+            VkPhysicalDeviceProperties deviceProperties = { };
+            vkGetPhysicalDeviceProperties(m_physicalDevices[0], &deviceProperties);
+
+            cout << deviceProperties.deviceName << endl;
         }
     }
 

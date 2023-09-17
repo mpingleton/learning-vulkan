@@ -41,6 +41,9 @@ int main(int argc, char** argv)
             VkPhysicalDeviceProperties deviceProperties = { };
             vkGetPhysicalDeviceProperties(m_physicalDevices[0], &deviceProperties);
 
+            VkPhysicalDeviceFeatures deviceFeatures = { };
+            vkGetPhysicalDeviceFeatures(m_physicalDevices[0], &deviceFeatures);
+
             cout << deviceProperties.deviceName << endl;
         }
     }

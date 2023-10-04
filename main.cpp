@@ -23,6 +23,8 @@ int main(int argc, char** argv)
     instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     instanceCreateInfo.pApplicationInfo = &appInfo;
     result = vkCreateInstance(&instanceCreateInfo, nullptr, &m_instance);
+    if (result == VK_ERROR_INCOMPATIBLE_DRIVER) cout << "Incompatible driver." << endl;
+
     if (result != VK_SUCCESS) return 1;
     
     cout << "Succeeded in creating a Vulkan instance!" << endl;

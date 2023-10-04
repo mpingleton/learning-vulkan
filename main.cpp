@@ -24,40 +24,37 @@ int main(int argc, char** argv)
     instanceCreateInfo.pApplicationInfo = &appInfo;
 
     result = vkCreateInstance(&instanceCreateInfo, nullptr, &m_instance);
-    if (result == VK_SUCCESS)
+    if (result != VK_SUCCESS) return 1;
+    
+    cout << "Succeeded in creating a Vulkan instance!" << endl;
+
+    // First figure out how many devices are in the system.
+    uint32_t physicalDeviceCount = 0;
+    result = vkEnumeratePhysicalDevices(m_instance, &physicalDeviceCount, nullptr);
+    if (result != VK_SUCCESS) return 2;
+
+    cout << "We have " << physicalDeviceCount << " devices on this system." << endl;
+    m_physicalDevices.resize(physicalDeviceCount);
+    vkEnumeratePhysicalDevices(m_instance, &physicalDeviceCount, m_physicalDevices.data());
+
+    for (int deviceIndex = 0;  deviceIndex < m_physicalDevices.size(); deviceIndex++)
     {
-        cout << "Succeeded" << endl;
+        VkPhysicalDeviceProperties deviceProperties = { };
+        vkGetPhysicalDeviceProperties(m_physicalDevices[deviceIndex], &deviceProperties);
+        cout << deviceProperties.deviceName << endl;
 
-        // First figure out how many devices are in the system.
-        uint32_t physicalDeviceCount = 0;
-        result = vkEnumeratePhysicalDevices(m_instance, &physicalDeviceCount, nullptr);
+        VkPhysicalDeviceFeatures deviceFeatures = { };
+        vkGetPhysicalDeviceFeatures(m_physicalDevices[deviceIndex], &deviceFeatures);
 
-        if (result == VK_SUCCESS)
-        {
-            cout << "We have " << physicalDeviceCount << " devices on this system." << endl;
-            m_physicalDevices.resize(physicalDeviceCount);
-            vkEnumeratePhysicalDevices(m_instance, &physicalDeviceCount, m_physicalDevices.data());
+        VkPhysicalDeviceMemoryProperties memoryProperties;
+        vkGetPhysicalDeviceMemoryProperties(m_physicalDevices[deviceIndex], &memoryProperties);
 
-            for (int deviceIndex = 0;  deviceIndex < m_physicalDevices.size(); deviceIndex++)
-            {
-                VkPhysicalDeviceProperties deviceProperties = { };
-                vkGetPhysicalDeviceProperties(m_physicalDevices[deviceIndex], &deviceProperties);
-                cout << deviceProperties.deviceName << endl;
-
-                VkPhysicalDeviceFeatures deviceFeatures = { };
-                vkGetPhysicalDeviceFeatures(m_physicalDevices[deviceIndex], &deviceFeatures);
-
-                VkPhysicalDeviceMemoryProperties memoryProperties;
-                vkGetPhysicalDeviceMemoryProperties(m_physicalDevices[deviceIndex], &memoryProperties);
-
-                uint32_t queueFamilyPropertyCount = 0;
-                vector<VkQueueFamilyProperties> queueFamilyProperties;
-                vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevices[deviceIndex], &queueFamilyPropertyCount, nullptr);
-                queueFamilyProperties.resize(queueFamilyPropertyCount);
-                vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevices[deviceIndex], &queueFamilyPropertyCount, &queueFamilyProperties[0]);
-            }
-        }
+        uint32_t queueFamilyPropertyCount = 0;
+        vector<VkQueueFamilyProperties> queueFamilyProperties;
+        vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevices[deviceIndex], &queueFamilyPropertyCount, nullptr);
+        queueFamilyProperties.resize(queueFamilyPropertyCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(m_physicalDevices[deviceIndex], &queueFamilyPropertyCount, &queueFamilyProperties[0]);
     }
-
+    
     return 0;
 }

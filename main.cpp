@@ -61,7 +61,7 @@ int main(int argc, char** argv)
     // The above commented-out code runs through each physical device that the computer has.  For now, we just want to use the first one.
     VkPhysicalDeviceProperties deviceProperties = { };
     vkGetPhysicalDeviceProperties(m_physicalDevices[0], &deviceProperties);
-    cout << deviceProperties.deviceName << endl;
+    cout << "\t- " << deviceProperties.deviceName << endl;
 
     VkPhysicalDeviceFeatures deviceFeatures = { };
     vkGetPhysicalDeviceFeatures(m_physicalDevices[0], &deviceFeatures);
@@ -106,6 +106,21 @@ int main(int argc, char** argv)
     VkDevice m_logicalDevice;
     result = vkCreateDevice(m_physicalDevices[0], &deviceCreateInfo, nullptr, &m_logicalDevice);
     if (result != VK_SUCCESS) return 3;
+
+    uint32_t numInstanceLayers = 0;
+    vector<VkLayerProperties> instanceLayerProperties;
+    vkEnumerateInstanceLayerProperties(&numInstanceLayers, nullptr);
+    cout << "Found " << numInstanceLayers << " instance layers supported by this Vulkan system." << endl;
+    if (numInstanceLayers != 0)
+    {
+        instanceLayerProperties.resize(numInstanceLayers);
+        vkEnumerateInstanceLayerProperties(&numInstanceLayers, instanceLayerProperties.data());
+
+        for (uint32_t layerIndex = 0; layerIndex < numInstanceLayers; layerIndex++)
+        {
+            cout << "\t- " << instanceLayerProperties[layerIndex].layerName << " (" << instanceLayerProperties[layerIndex].description << ")" << endl;
+        }
+    }
     
     return 0;
 }

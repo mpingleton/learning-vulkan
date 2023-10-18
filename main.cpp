@@ -121,6 +121,21 @@ int main(int argc, char** argv)
             cout << "\t- " << instanceLayerProperties[layerIndex].layerName << " (" << instanceLayerProperties[layerIndex].description << ")" << endl;
         }
     }
+
+    uint32_t numInstanceExtensions = 0;
+    vector<VkExtensionProperties> instanceExtensionProperties;
+    vkEnumerateInstanceExtensionProperties(nullptr, &numInstanceExtensions, nullptr);
+    cout << "Found " << numInstanceExtensions << " instance extensions supported by this Vulkan system." << endl;
+    if (numInstanceExtensions != 0)
+    {
+        instanceExtensionProperties.resize(numInstanceExtensions);
+        vkEnumerateInstanceExtensionProperties(nullptr, &numInstanceExtensions, instanceExtensionProperties.data());
+
+        for (uint32_t extensionIndex = 0; extensionIndex < numInstanceExtensions; extensionIndex++)
+        {
+            cout << "\t- " << instanceExtensionProperties[extensionIndex].extensionName << endl;
+        }
+    }
     
     return 0;
 }

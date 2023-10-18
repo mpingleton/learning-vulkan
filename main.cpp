@@ -136,6 +136,12 @@ int main(int argc, char** argv)
             cout << "\t- " << instanceExtensionProperties[extensionIndex].extensionName << endl;
         }
     }
+
+    // Shut down cleanly.
+    cout << "Shutting down... ";
+    vkDeviceWaitIdle(m_logicalDevice);
+    vkDestroyDevice(m_logicalDevice, nullptr);
+    cout << "done!" << endl;
     
     return 0;
 }
